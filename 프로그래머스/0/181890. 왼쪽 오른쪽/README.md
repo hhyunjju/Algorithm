@@ -2,6 +2,9 @@
 
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181890#qna) 
 
+### 느낀 점
+차라리 for 문으로 푸는 게 좋은 경우도 있다
+
 ### 성능 요약
 
 메모리: 79.2 MB, 시간: 0.11 ms
