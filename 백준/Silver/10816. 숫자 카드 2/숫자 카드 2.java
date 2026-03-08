@@ -1,34 +1,72 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.StringJoiner;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        // 가지고 있는 카드개수
-        int n = Integer.parseInt(sc.nextLine());
-        // 가지고 있는 숫자 카드에 적혀있는 정수
-        String[] having = sc.nextLine().split(" ");
-        //
-        int m = Integer.parseInt(sc.nextLine());
-        // 상근이가 몇 개 가지고 있는 숫자 카드인지 구해야 할 M개의 정수
-        String[] target = sc.nextLine().split(" ");
-        Map<Integer, Integer> targetMap = Arrays.stream(target)
-                .collect(Collectors.toMap(
-                        i -> Integer.parseInt(i),
-                        i -> 0,
-                        (oldValue, newValue) -> oldValue
-                ));
-        for (int i = 0; i < n; i++) {
-            if (targetMap.get(Integer.parseInt(having[i])) != null) {
-                targetMap.put(Integer.parseInt(having[i]), targetMap.get(Integer.parseInt(having[i])) + 1);
-                ;
-            }
-        }
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        String[] nArr = br.readLine().split(" ");
+        int[] nIntArr = Arrays.stream(nArr).mapToInt(Integer::parseInt).toArray();
+        Arrays.sort(nIntArr);
+
+        int m = Integer.parseInt(br.readLine());
+        String[] mArr = br.readLine().split(" ");
+
         StringJoiner sj = new StringJoiner(" ");
         for (int i = 0; i < m; i++) {
-            Integer cnt = targetMap.get(Integer.parseInt(target[i]));
-            sj.add(String.valueOf(cnt));
+            int target = Integer.parseInt(mArr[i]);
+            sj.add(String.valueOf(getTargetCnt(nIntArr, target)));
         }
-        System.out.println(sj);
+        System.out.println(sj.toString());
+    }
+
+    private static int getTargetCnt(int[] nArr, int target) {
+        int lb = getLb(nArr, target);
+        if(lb == -1){
+            return 0;
+        }
+        int ub = getUb(nArr, target);
+        return ub-lb+1;
+    }
+
+    private static int getLb(int[] nArr, int target) {
+        int leftIdx = 0;
+        int rightIdx = nArr.length - 1;
+        int lb = -1;
+        while (leftIdx <= rightIdx) {
+            int midIdx = leftIdx + (rightIdx - leftIdx) / 2;
+            if (nArr[midIdx] >= target) {
+                lb =  midIdx;
+                rightIdx = midIdx - 1;
+            }else{
+                leftIdx = midIdx + 1;
+            }
+        }
+        if (lb == -1 || nArr[lb] != target) {
+            return -1;
+        }
+        return lb;
+    }
+
+    private static int getUb(int[] nArr, int target) {
+        int leftIdx = 0;
+        int rightIdx = nArr.length - 1;
+        int ub = -1;
+        while (leftIdx <= rightIdx) {
+            int midIdx = leftIdx + (rightIdx - leftIdx) / 2;
+            if (nArr[midIdx] <= target) {
+                ub =  midIdx;
+                leftIdx = midIdx + 1;
+            }else{
+                rightIdx = midIdx -1;
+            }
+        }
+        if (ub==-1||nArr[ub] != target) {
+            return -1;
+        }
+        return ub;
     }
 }
