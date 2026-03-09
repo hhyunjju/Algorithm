@@ -1,58 +1,48 @@
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.util.Arrays;
 
+/**
+ * 최대길이 (최소개수)를 구하라.
+ */
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-
-        int K = Integer.parseInt(st.nextToken());
-        int N = Integer.parseInt(st.nextToken());
-
-        long[] arr = new long[K];
-        long max = 0;
-
-        for (int i = 0; i < K; i++) {
-            arr[i] = Long.parseLong(br.readLine());
-            if (max < arr[i]) {
-                max = arr[i];
-            }
+        String[] kn = br.readLine().split(" ");
+        int k = Integer.parseInt(kn[0]);
+        int n = Integer.parseInt(kn[1]);
+        int[] arr = new int[k];
+        int maxValue = Integer.MIN_VALUE;
+        for (int i = 0; i < k; i++) {
+            arr[i] = Integer.parseInt(br.readLine());
+            maxValue = Math.max(maxValue, arr[i]);
         }
 
-        // 핵심: 이분 탐색의 범위를 long으로 잡아야 함
-        // max에 1을 더하는 이유는 mid가 0이 되는 것을 방지하고 
-        // 상한선(Upper Bound)을 찾기 위함입니다.
-        max++; 
+        // 최대길이
+        long min = 1;
+        long max = maxValue;
 
-        long min = 0; 
-        long mid = 0; 
-
-        while (min < max) {
-            mid = (min + max) / 2;
-            
-            // 0으로 나누기 방지
-            if (mid == 0) {
-                min = 1;
-                break;
-            }
-
-            long count = 0;
-            for (int i = 0; i < arr.length; i++) {
-                count += (arr[i] / mid);
-            }
-
-            // [Upper Bound 방식]
-            // 개수가 N보다 작으면 길이를 줄여야 함
-            if (count < N) {
-                max = mid;
-            } else {
-                // 개수가 N보다 크거나 같으면 일단 길이를 늘려봄
+        // 다 해볼 순 없으니까 범위를 좁히는 것.
+        long lb = -1;
+        while(min <= max) {
+            long mid = min + (max - min) / 2;
+            if (getLenSum(mid, arr) >= n) {
+                lb = mid;
                 min = mid + 1;
+            }else{
+                // 길이가 너무 길다는 의미 -> 길이를 줄임.
+                max = mid - 1;
             }
         }
+        System.out.println(lb);
+    }
 
-        // 찾고자 하는 값은 상한선에서 1을 뺀 값
-        System.out.println(min - 1);
+    private static long getLenSum(long len, int[] arr) {
+        long sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            sum+= arr[i]/len;
+        }
+        return sum;
     }
 }
