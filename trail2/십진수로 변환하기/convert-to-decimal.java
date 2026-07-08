@@ -7,8 +7,8 @@ public class Main {
         // Please write your code here.
         char[] arr = binary.toCharArray();
         int result = 0;
-        for(int i = 0 ; i < arr.length; i++){
-            result += Math.pow(2, i)*(arr[arr.length-1-i] - '0');
+        for(int i = 0; i < arr.length; i++){
+            result = result * 2 + (arr[i] - '0');
         }
         System.out.println(result);
     }
