@@ -1,21 +1,22 @@
-import java.util.*;
+import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
-        // Please write your code here.
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
-        int[] list = new int[17];
-        // 나머지를 저장한다.
-        int idx = 0;
+        // Please write your code here.
+        int[] nums = new int[20];
+        int i = 0;
         while(true){
-            list[idx++] = n%2;
-            if(n==1 || n==0){
+            // 나머지를 nums에 추가
+            nums[i] = n%2;
+            n/=2;
+            if(n == 0){
                 break;
             }
-            n /= 2;
+            i++;
         }
-        for(int i = idx-1 ; i >= 0 ; i--){
-            System.out.print(list[i]);
+        for(int j = i; j >=0 ; j--){
+            System.out.print(nums[j]);
         }
     }
 }
